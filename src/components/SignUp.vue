@@ -1,5 +1,10 @@
 <script setup>
 import { ref } from 'vue'
+import { useAuth } from '../Services/auth'
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+const {signup} = useAuth()
 
 const showPassword = ref(false)
 const password = ref(null) 
@@ -30,12 +35,14 @@ function register()
         location: location.value,
         address: address.value,
         password: password.value,
+        role: 2,
+
+        //role- 1 - Admin, //role- 2 - Customer
     }
-    try{
-        localStorage.setItem("user", JSON.stringify(data))
-    }catch{
-        console.log("Error signing up")
-    }
+    signup(data)
+    router.push('/').then(() => {
+        router.go(0)
+    });
 }
 
 </script>
@@ -45,6 +52,9 @@ function register()
         <v-row>
             <v-col>
                 <v-card color="secondary" width="80%">
+                    <v-img src="/Tusome_logo.png" height="150" width="150" class="mt-4"></v-img>
+                    <v-card-title class="ma-5">Sign Up</v-card-title>
+                    <v-divider></v-divider>
                     <v-form class="ma-8">
 
                         <v-row>
@@ -123,11 +133,12 @@ function register()
 
                         <v-row>
                             <v-col md ="6">
-                                <div><v-btn @click="register()" elevation="4" variant="elevated"> Sign Up </v-btn></div>
+                                <div><v-btn @click="register()" elevation="4" variant="elevated" block> Sign Up </v-btn></div>
                             </v-col>
                             <v-col md ="6">
                                 <div>
                                     Already have an account?
+                                    <router-link to="/login">Login</router-link>
                                 </div>
                             </v-col>
                         </v-row>
