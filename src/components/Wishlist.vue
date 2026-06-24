@@ -1,77 +1,71 @@
 <script setup>
+import { useRouter } from 'vue-router'
+import { useWishlistStore } from '../stores/wishlist'
+import { useCartStore } from '../stores/cart'
 
-</script>
+const router = useRouter()
+const wishlistStore = useWishlistStore()
+const cartStore = useCartStore()
 
-<script setup>
-import { ref } from 'vue'
+function removeItem(bookName) {
+  wishlistStore.removeFromWishlist(bookName)
+}
 
-const wishlist = ref([
-  {
-    id: 1,
-    name: 'Atomic Habits',
-    price: 1500,
-    author: 'James Clear',
-    image: '/images/Book_16.jpg'
-  },
-  {
-    id: 2,
-    name: 'The Pragmatic Programmer',
-    price: 2200,
-    author: 'David Thomas & Andrew Hunt',
-    image: '/images/Book_17.jpg'
-  }
-  // add as many books as you like, following the same shape
-])
-
-function addToCart(item) {
-  console.log('Added to cart:', item.name)
-  // hook this up to your cart logic / store
+function addToCart(book) {
+  cartStore.addToCart(book)
 }
 </script>
 
-<!-- Wishlist Component -->
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <div class="text-h4 mb-15 mt-15 text-center">
-          Your Wishlist
-        </div>
+  <v-container class="page-section" max-width="1200">
+    <v-row class="mb-6">
+      <v-col cols="12" class="text-center">
+        <div class="section-title">Your wishlist</div>
+        <p class="section-subtitle mt-4">Keep books here while you decide what to read next.</p>
       </v-col>
     </v-row>
 
-    <v-row>
-      <v-col
-        cols="12"
-        v-for="item in wishlist"
-        :key="item.id"
-      >
-        <v-card color="primary">
-          <v-row>
-            <v-col cols="12" md="4" class="text-center">
-              <v-avatar color="grey" rounded="0" size="150">
-                <v-img :src="item.image"></v-img>
-              </v-avatar>
-            </v-col>
-            <v-col cols="12" md="8" class="text-right">
-              <v-card-item>
-                <v-card-title class="mb-6">{{ item.name }}</v-card-title>
-                <v-card-subtitle>Ksh {{ item.price }}</v-card-subtitle>
-                <v-card-text>By: {{ item.author }}</v-card-text>
-              </v-card-item>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  elevation="4"
-                  variant="elevated"
-                  @click="addToCart(item)"
-                >
-                  Add to Cart
-                </v-btn>
-              </v-card-actions>
-            </v-col>
-          </v-row>
+    <v-row v-if="wishlistStore.wishlist.length">
+      <v-col v-for="item in wishlistStore.wishlist" :key="item.name" cols="12" md="6" lg="4">
+        <v-card rounded="xl" elevation="10" class="h-100 d-flex flex-column overflow-hidden">
+          <v-img :src="item.image" height="220" cover />
+
+          <v-card-title>{{ item.name }}</v-card-title>
+          <v-card-subtitle>By {{ item.author }}</v-card-subtitle>
+          <v-card-text>
+            <div>{{ item.description }}</div>
+            <div class="mt-3 font-weight-medium">Price: {{ item.price }}</div>
+          </v-card-text>
+
+          <v-card-actions class="mt-auto">
+            <v-btn variant="outlined" color="primary" @click="removeItem(item.name)">
+              Remove
+            </v-btn>
+            <v-spacer />
+            <v-btn color="primary" variant="elevated" @click="addToCart(item)">
+              Add to cart
+            </v-btn>
+          </v-card-actions>
         </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row v-else>
+      <v-col cols="12" class="text-center py-12">
+        <v-icon size="72" color="primary" icon="mdi-heart-outline" />
+        <div class="text-h5 mt-4 mb-2">Your wishlist is empty</div>
+        <div class="text-body-1 mb-6">Save books here to come back to them later.</div>
+        <v-btn color="primary" variant="elevated" @click="router.push('/books')">
+          Browse books
+        </v-btn>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="wishlistStore.wishlist.length" class="mt-4">
+      <v-col cols="12" class="text-right">
+        <v-btn variant="outlined" color="error" @click="wishlistStore.clearWishlist()">
+          Clear wishlist
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>

@@ -69,6 +69,7 @@ function buy(book){
                             <v-spacer></v-spacer>
                             <v-card-text>Total: 0</v-card-text>
                             <v-btn elevation="4" variant="elevated" @click="buy(book)"> Add to Cart </v-btn>
+                            <v-btn elevation="4" variant="elevated" @click="addToWishlist(book)"> Add to Wishlist </v-btn>
                         </v-card-actions>
                 </v-card>
             </v-col>
