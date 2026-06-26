@@ -195,6 +195,13 @@ export const useBooksStore = defineStore('books',  {
        updateSelectedBook (payload) {
            this.selectedBook = payload
        },
+
+       addBook(payload) {
+        //get the last key in the books object
+        const maxKeys = Object.keys(this.books).map(Number);
+        const maxKey = existingKeys.length > 0 
+        const nextKey = maxKey +1;
+       }
    },
    persist: true,
 })
